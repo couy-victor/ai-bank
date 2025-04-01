@@ -35,6 +35,7 @@ fourbank/
 ## 🛠️ Tecnologias Utilizadas
 
 - Python
+- LangGraph para orquestração de agentes e fluxos conversacionais
 - Processamento de Linguagem Natural (NLP)
 - Armazenamento Vetorial para busca semântica
 - Grafos para navegação contextual
