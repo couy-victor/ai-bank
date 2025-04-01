@@ -1,0 +1,1 @@
+from .vectorstore import carregar_faq, carregar_multiplos_faqs
