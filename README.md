@@ -60,7 +60,7 @@ python app.py
 
 ## 📄 Licença
 
-Este projeto está sob a licença [inserir tipo de licença].
+Este projeto está sob a licença MIT.
 
 ## 👥 Contribuição
 
