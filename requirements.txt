@@ -9,5 +9,7 @@ openai>=1.10.0
 faiss-cpu>=1.7.4
 PyPDF2>=3.0.0
 langgraph>=0.0.20
+modelcontextprotocol==0.1.0
+asyncio>=3.4.3
 
 #pip install -U langchain-community

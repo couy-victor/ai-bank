@@ -1,0 +1,9 @@
+{
+  "name": "fourbank-mcp",
+  "version": "1.0.0",
+  "description": "MCP servers for Fourbank",
+  "type": "module",
+  "scripts": {
+    "start": "node mcp_servers/banking-api-server.js"
+  }
+}

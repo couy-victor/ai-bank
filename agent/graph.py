@@ -16,13 +16,23 @@ from agent.nodes import (
     responder_generico
 )
 
+# from agent.mcp_client import MCPAgent
+from agent.mcp_node_client import MCPAgent
+
 def create_agent_graph(vectorstore=None):
     """Cria o grafo do agente de banking."""
     # Configuração do modelo LLM usando Groq
     llm = ChatGroq(
-        model="llama3-70b-8192",  # Ou outro modelo disponível
+        model="llama3-70b-8192",
         temperature=0
     )
+    
+    # Inicializa o cliente MCP
+    mcp_agent = MCPAgent(vectorstore)
+    
+    # Função para processar consultas via MCP
+    def process_with_mcp(state: ChatState):
+        return mcp_agent.process_state(state)
     
     # Roteador baseado na intenção
     def router(state: ChatState):
@@ -43,8 +53,9 @@ def create_agent_graph(vectorstore=None):
     builder.add_node("pagamento_boleto", processar_pagamento_boleto)
     builder.add_node("pagamento_cartao", processar_pagamento_cartao)
     builder.add_node("perfil", processar_perfil)
-    builder.add_node("duvida", process_duvida_with_vectorstore)  # Usando a função wrapper
+    builder.add_node("duvida", process_duvida_with_vectorstore)
     builder.add_node("outro", responder_generico)
+    builder.add_node("mcp", process_with_mcp)  # Adiciona o nó MCP para integração com a API bancária
     
     # Define o fluxo do grafo
     builder.set_entry_point("classificador_intencao")
@@ -59,7 +70,8 @@ def create_agent_graph(vectorstore=None):
             "pagamento_cartao": "pagamento_cartao",
             "perfil": "perfil",
             "duvida": "duvida",
-            "outro": "outro"
+            "outro": "outro",
+            "mcp": "mcp"     # Rota para o processamento MCP
         }
     )
     
@@ -72,6 +84,7 @@ def create_agent_graph(vectorstore=None):
     builder.add_edge("perfil", END)
     builder.add_edge("duvida", END)
     builder.add_edge("outro", END)
+    builder.add_edge("mcp", END)
     
     # Constrói o grafo
     graph = builder.compile()
@@ -142,7 +155,9 @@ def create_agent(cliente_id, vectorstore=None):
                 "extrato": ["extrato", "transações", "histórico"],
                 "boleto": ["boleto", "conta", "fatura"],
                 "cartao": ["cartão", "crédito", "compra"],
-                "perfil": ["perfil", "financeiro", "análise"]
+                "perfil": ["perfil", "financeiro", "análise"],
+                "emprestimo": ["empréstimo", "crédito", "financiamento", "consignado", "taxa"],
+                "api": ["api", "integração", "sistema", "ferramenta", "consulta"]
             }
             
             for topic, keywords in topic_keywords.items():

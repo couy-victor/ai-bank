@@ -103,6 +103,14 @@ def classificar_intencao(state: ChatState) -> ChatState:
     elif padrao_duvida:
         intencao = "duvida"
         parametros = {"query": mensagem}
+    elif any(palavra in mensagem for palavra in [
+        "empréstimo consignado", "emprestimo consignado", "consignado", 
+        "taxas", "juros", "taxa de juros", "elegibilidade", 
+        "posso pegar empréstimo", "aprovação", "consultar", "consulta", 
+        "margem", "margem consignável", "disponibilidade"
+    ]):
+        intencao = "mcp"  # Intenção para processamento via MCP
+        parametros = {"query": mensagem}
     else:
         intencao = "outro"
         parametros = {}
